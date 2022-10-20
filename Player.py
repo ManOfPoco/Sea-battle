@@ -14,3 +14,7 @@ class Player:
 
 
 pl = Player("Player", Board())
+pl.board.board_representation()
+print()
+pl.shot(5, 9)
+pl.board.board_representation()

@@ -4,8 +4,8 @@ from Dot import Dot
 class Board(Dot):
 
     def __init__(self) -> None:
-        self.board = [[Dot("empty_dot") for _ in range(10)]
-                      for _ in range(10)]
+        self.board = [[Dot(i, y, "empty_dot") for i in range(10)]
+                      for y in range(10)]
 
     def board_representation(self) -> Dot:
         for i in range(len(self.board)):
