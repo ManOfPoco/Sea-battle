@@ -1,5 +1,3 @@
-
-
 class Dot:
 
     SIGNS = {
