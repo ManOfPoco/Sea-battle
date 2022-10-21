@@ -3,7 +3,7 @@ import Ships
 
 
 class Player:
-    """Class represent Player"""
+    """Class represents Players"""
 
     def __init__(self, name: str, board: Board) -> None:
         self.name = name.lower()
@@ -36,9 +36,9 @@ class Player:
             if not self.board_validation(x, y) or \
                not self.validate_ship_distance(x, y, ship_color):
                 return False
-
-            x += direction_relation.get(direction)[0]
-            y += direction_relation.get(direction)[1]
+            if ship_type != 1:
+                x += direction_relation.get(direction)[0]
+                y += direction_relation.get(direction)[1]
 
         return True
 
@@ -49,7 +49,7 @@ class Player:
             return False
         return True
 
-    def put_ships_manually(self, ship_type: str, coord_x: int,
+    def put_ships_manually(self, ship_type: int, coord_x: int,
                            coord_y: int, direction: str = None) -> bool:
         """Putting ships on the Board"""
 
@@ -68,16 +68,19 @@ class Player:
         ship_color = "enemy_ship" \
             if self.name == "computer" else "my_ship"
 
-        ship = ship_relation.get(ship_type)(coord_x, coord_y, ship_color)
-
         if not self.validation_putting_ships(coord_x, coord_y,
                                              ship_type, direction, ship_color):
             return False
 
+        ship = ship_relation.get(ship_type)(coord_x, coord_y, ship_color)
+
         for _ in range(ship_type):
             self.board.board[coord_x][coord_y] = ship
-            coord_x += direction_relation.get(direction)[0]
-            coord_y += direction_relation.get(direction)[1]
+            if ship_type != 1:
+                coord_x += direction_relation.get(direction)[0]
+                coord_y += direction_relation.get(direction)[1]
+
+        return True
 
     def shot(self, x, y) -> bool:
         """Player shot"""
@@ -96,14 +99,6 @@ class Player:
         return False
 
 
-pl = Player("Player", Board())
-pl.board.board_representation()
-print()
-pl.put_ships_manually(4, 4, 6, "left")
-pl.board.board_representation()
-print()
-
-cp = Player("Computer", Board())
-cp.put_ships_manually(4, 4, 6, "left")
-cp.board.board_representation()
-print()
+player = Player("player", Board())
+player.put_ships_manually(1, 1, 2)
+player.board.board_representation()
