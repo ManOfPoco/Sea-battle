@@ -1,5 +1,6 @@
+from itertools import count
 from Dot import Dot
-from Ships import OneDeckShip
+
 
 
 class Board(Dot):
@@ -18,8 +19,16 @@ class Board(Dot):
             print(i, end=" ")
             for j in range(len(self.board[i])):
                 if hide:
-                    if self.board[i][j].sigh == self.SIGNS.get("enemy_ship"):
-                        print(self.board[i][j].SIGNS.get("empty_dot"), end="")
+                    if self.board[i][j].sigh == self.SIGNS.get("my_ship"):
+                        print(self.board[i][j].SIGNS.get("empty_dot"), end=" ")
                         continue
                 print(str(self.board[i][j].sigh).lstrip(), end="")
-            print()
+            print("")
+
+    def count_ships(self):
+        cnt = 0
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j].sigh != self.SIGNS.get("empty_dot"):
+                    cnt += 1
+        print(cnt)

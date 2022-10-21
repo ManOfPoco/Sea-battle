@@ -13,6 +13,8 @@ class Player:
         x, y = x - 1, y - 1
         for _ in range(3):
             for _ in range(3):
+                if not self.board_validation(x, y):
+                    return False
                 if self.board.board[x][y].sigh == Ships.Dot.SIGNS.get(ship_color):
                     return False
 
@@ -25,20 +27,18 @@ class Player:
     def validation_putting_ships(self, x, y, ship_type, direction, ship_color) -> bool:
         """Validating putting ships on the board"""
 
-        direction_relation = {
-            "left": (0, -1), "right": (0, 1),
-            "up": (-1, 0), "down": (1, 0),
-            "налево": (0, -1), "направо": (0, 1),
-            "вверх": (-1, 0), "вниз": (1, 0),
-        }
+        if ship_type != 1:
+            for _ in range(ship_type):
+                if not self.board_validation(x, y):
+                    return False
+                if not self.validate_ship_distance(x, y, ship_color):
+                    return False
 
-        for _ in range(ship_type):
-            if not self.board_validation(x, y) or \
-               not self.validate_ship_distance(x, y, ship_color):
+                x += direction[0]
+                y += direction[1]
+        else:
+            if not self.validate_ship_distance(x, y, ship_color):
                 return False
-            if ship_type != 1:
-                x += direction_relation.get(direction)[0]
-                y += direction_relation.get(direction)[1]
 
         return True
 
@@ -68,8 +68,9 @@ class Player:
         ship_color = "enemy_ship" \
             if self.name == "computer" else "my_ship"
 
-        if not self.validation_putting_ships(coord_x, coord_y,
-                                             ship_type, direction, ship_color):
+        if not self.validation_putting_ships(coord_x, coord_y, ship_type,
+                                             direction_relation.get(direction),
+                                             ship_color):
             return False
 
         ship = ship_relation.get(ship_type)(coord_x, coord_y, ship_color)
@@ -97,8 +98,3 @@ class Player:
 
             return True
         return False
-
-
-player = Player("player", Board())
-player.put_ships_manually(1, 1, 2)
-player.board.board_representation()

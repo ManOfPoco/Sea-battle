@@ -1,3 +1,6 @@
+import emoji
+
+
 class Dot:
 
     SIGNS = {

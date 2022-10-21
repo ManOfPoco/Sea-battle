@@ -1,6 +1,10 @@
 from Board import Board
 from Player import Player
-from random import choice
+from random import choice, choices
+import os
+
+
+os.system("cls")
 
 
 class SeaBattleGame:
@@ -52,66 +56,110 @@ class SeaBattleGame:
 |=|_________XX________________________XXX
 |=|___________|=|--------------------------------------------------------------------------------------------------"""))
 
-        self.ship_placement(self._player)
-        self.ship_placement(self._computer)
+        # is_autoplacement = input("Do you want to place ships automatically or manually? a(automatically) / m(manually)")
+        # if is_autoplacement == "a":
+        #     self.ship_placement_automatically(self._player)
+        # else:
+        #     self.ship_placement_manually()
+        # self.ship_placement_automatically(self._computer)
+        self.ship_placement_automatically(self._player)
 
         # while self.check_end_game():
         #     self.game_round()
 
-    def ship_placement(self, player: Player):
+    def get_position(self, auto=False):
+        while True:
+            try:
+                if auto:
+                    coords = range(10)
+                    coord_x, coord_y = choices(coords, k=2)
+                else:
+                    print(f"Enter position x and y separated by a space to put ship on the deck")
+                    self._player.board.board_representation()
+                    coord_x, coord_y = map(int, input().split())
+            except ValueError:
+                print("Please Enter correct value")
+                continue
+            break
+        return coord_x, coord_y
+
+    def get_direction(self, auto=False):
+
+        direction_various = ("up", "down", "left", "right",
+                          "вверх", "вниз", "налево", "направо")
+        while True:
+            if auto:
+                direction = choice(direction_various[0:4])
+                break
+            else:
+                print(f"Enter direction to put ship on the deck",
+                    f"\nAvaiable directions: {direction_various}")
+                self._player.board.board_representation()
+
+                direction = input()
+                if direction in direction_various:
+                    break
+
+        return direction
+
+    def ship_placement_manually(self):
         ships_remained = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4]
 
         while ships_remained:
-            if player.name == "computer":
-                ship_choose = choice(ships_remained)
-            else:
-                try:
-                    print(f"Ships remained {ships_remained}",
-                          f"\nEnter a ship to put on the deck")
-                    ship_choose = int(input())
-                except ValueError:
-                    print("Please Enter correct value")
-                    continue
+            try:
+                print(f"Ships remained {ships_remained}",
+                      f"\nEnter a ship to put on the deck")
+                ship_choose = int(input())
+            except ValueError:
+                print("Please Enter correct value")
+                continue
 
             if ship_choose not in ships_remained:
                 print("Please Enter correct value")
                 continue
 
-            ship = ships_remained.pop(ships_remained.index(ship_choose))
+            ship_size = ships_remained.pop(ships_remained.index(ship_choose))
 
-            while True:
-                try:
-                    print(f"Enter position x and y separated by a space to put ship on the deck")
-                    player.board.board_representation()
-                    coord_x, coord_y = map(int, input().split())
-                    break
-                except ValueError:
-                    print("Please Enter correct value")
-                    continue
+            coord_x, coord_y = self.get_position()
 
-            if ship != 1:
-                direction_list = ("up", "down", "left", "right",
-                                  "вверх", "вниз", "налево", "направо")
-                while True:
-                    print(f"Enter direction to put ship on the deck",
-                          f"\nAvaiable directions: {direction_list}")
+            if ship_size > 1:
+                direction = self.get_direction()
+                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                                                            coord_y, direction)
+            else:
+                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                                                            coord_y)
 
-                    direction = input()
-                    if direction in direction_list:
-                        break
+            if is_putted is False:
+                print("You can't put a ship there")
+                ships_remained.append(ship_size)
+                continue
 
-                is_putted = player.put_ships_manually(ship, coord_x,
-                                                      coord_y, direction)
+            self._player.board.board_representation()
 
+    def ship_placement_automatically(self, player: Player):
+        ships_remained = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4]
 
-            is_putted = player.put_ships_manually(ship, coord_x, coord_y)
+        while ships_remained:
+            ship_size = ships_remained.pop()
+            player.board.board_representation()
 
+            coord_x, coord_y = self.get_position(auto=True)
+            print(coord_x, coord_y)
+            if ship_size > 1:
+                direction = self.get_direction(auto=True)
+                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                                                            coord_y, direction)
+            else:
+                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                                                            coord_y)
 
-            # if is_putted:
-            #     for i in range(len(self._player.board.board)):
-            #         for j in range(len(self._player.board.board[i])):
-            #             print(self._player.board.board[i][j], end="")
-            #         print()
+            if is_putted is False:
+                ships_remained.append(ship_size)
+                continue
+
+        player.board.board_representation()
+        player.board.count_ships()
 
     def game_round(self):
         pass
