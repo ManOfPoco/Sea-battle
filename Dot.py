@@ -1,8 +1,8 @@
 class Dot:
 
     SIGNS = {
-        "my_ship": "🟦", "secondplayer_ship": "🟥", "hit": "❌",
-        "miss": "✖️", "empty_dot": "⬜"
+        "my_ship": "🟦", "enemy_ship": "🟥", "empty_dot": "⬜",
+        "hit": "❌", "miss": "✖️"
     }
 
     def __init__(self, x, y, sigh) -> None:
