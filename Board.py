@@ -2,7 +2,6 @@ from itertools import count
 from Dot import Dot
 
 
-
 class Board(Dot):
 
     def __init__(self) -> None:
@@ -23,12 +22,5 @@ class Board(Dot):
                         print(self.board[i][j].SIGNS.get("empty_dot"), end=" ")
                         continue
                 print(str(self.board[i][j].sigh).lstrip(), end="")
-            print("")
-
-    def count_ships(self):
-        cnt = 0
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                if self.board[i][j].sigh != self.SIGNS.get("empty_dot"):
-                    cnt += 1
-        print(cnt)
+            print()
+        print()

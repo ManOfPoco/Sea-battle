@@ -5,7 +5,7 @@ class Dot:
 
     SIGNS = {
         "my_ship": "\U0001F7E6", "enemy_ship": "\U0001F7E5", "empty_dot": "⬜",
-        "hit": "❌", "miss": "✖️"
+        "hit": "❌", "miss": "✖️ "
     }
 
     def __init__(self, x, y, sigh) -> None:

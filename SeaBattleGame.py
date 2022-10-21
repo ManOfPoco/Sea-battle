@@ -1,19 +1,16 @@
 from Board import Board
 from Player import Player
 from random import choice, choices
-import os
-
-
-os.system("cls")
 
 
 class SeaBattleGame:
     def __init__(self, player: Player, computer: Player) -> None:
         self._player = player
         self._computer = computer
+        self._round = 1
 
     def check_end_game(self) -> bool:
-        pass
+        return True
 
     def start_game(self) -> None:
         print(input("""
@@ -56,16 +53,25 @@ class SeaBattleGame:
 |=|_________XX________________________XXX
 |=|___________|=|--------------------------------------------------------------------------------------------------"""))
 
-        # is_autoplacement = input("Do you want to place ships automatically or manually? a(automatically) / m(manually)")
-        # if is_autoplacement == "a":
-        #     self.ship_placement_automatically(self._player)
-        # else:
-        #     self.ship_placement_manually()
-        # self.ship_placement_automatically(self._computer)
-        self.ship_placement_automatically(self._player)
+        is_autoplacement = input("Do you want to place ships automatically or manually? a(automatically) / m(manually): ")
+        if is_autoplacement == "a":
+            self.ship_placement_automatically(self._player)
+        else:
+            self.ship_placement_manually()
+        self.ship_placement_automatically(self._computer)
 
-        # while self.check_end_game():
-        #     self.game_round()
+        while self.check_end_game():
+            self._player.board.board_representation()
+            self._computer.board.board_representation()
+
+            turn_to_shot = self.check_order()
+            print(f"Now {turn_to_shot.name} turn")
+            self.game_round(turn_to_shot)
+
+    def check_order(self):
+        self._round += 1
+        return self._player \
+            if self._round % 2 == 0 else self._computer
 
     def get_position(self, auto=False):
         while True:
@@ -86,14 +92,15 @@ class SeaBattleGame:
     def get_direction(self, auto=False):
 
         direction_various = ("up", "down", "left", "right",
-                          "вверх", "вниз", "налево", "направо")
+                             "вверх", "вниз", "налево", "направо")
+
         while True:
             if auto:
                 direction = choice(direction_various[0:4])
                 break
             else:
                 print(f"Enter direction to put ship on the deck",
-                    f"\nAvaiable directions: {direction_various}")
+                      f"\nAvaiable directions: {direction_various}")
                 self._player.board.board_representation()
 
                 direction = input()
@@ -139,30 +146,46 @@ class SeaBattleGame:
 
     def ship_placement_automatically(self, player: Player):
         ships_remained = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4]
-
         while ships_remained:
+
             ship_size = ships_remained.pop()
-            player.board.board_representation()
 
             coord_x, coord_y = self.get_position(auto=True)
-            print(coord_x, coord_y)
             if ship_size > 1:
                 direction = self.get_direction(auto=True)
-                is_putted = self._player.put_ships_manually(ship_size, coord_x,
-                                                            coord_y, direction)
+                is_putted = player.put_ships_manually(ship_size, coord_x,
+                                                      coord_y, direction)
             else:
-                is_putted = self._player.put_ships_manually(ship_size, coord_x,
-                                                            coord_y)
+                is_putted = player.put_ships_manually(ship_size, coord_x,
+                                                      coord_y)
 
             if is_putted is False:
                 ships_remained.append(ship_size)
                 continue
 
-        player.board.board_representation()
-        player.board.count_ships()
+    def game_round(self, player: Player):
 
-    def game_round(self):
-        pass
+        if player == self._computer:
+            coordto_fire_x, coordto_fire_y = choices(range(10), k=2)
+
+        while True:
+            try:
+                coordto_fire_x, coordto_fire_y = map(int, input("Enter position x and y separated by a space to shot: ").split())
+            except ValueError:
+                print("Not valid position, try again please")
+                continue
+            break
+
+        enemy_to_shot = self._computer \
+            if player == self._player else self._player
+
+        result_of_shot = player.shot(coordto_fire_x,
+                                     coordto_fire_y, enemy_to_shot)
+
+        if result_of_shot is False:
+            print("You can't fire there")
+            self.game_round(player)
+
 
     def end_game(self):
         pass

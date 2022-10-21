@@ -14,7 +14,8 @@ class Player:
         for _ in range(3):
             for _ in range(3):
                 if not self.board_validation(x, y):
-                    return False
+                    y += 1
+                    continue
                 if self.board.board[x][y].sigh == Ships.Dot.SIGNS.get(ship_color):
                     return False
 
@@ -83,18 +84,20 @@ class Player:
 
         return True
 
-    def shot(self, x, y) -> bool:
+    def shot(self, x, y, enemy) -> bool:
         """Player shot"""
 
-        if self.board(x, y):
+        if self.board_validation(x, y):
 
-            if self.board.board[x][y].sigh == self.board.SIGNS.get("miss") or \
-               self.board.board[x][y].sigh == self.board.SIGNS.get("hit"):
+            if enemy.board.board[x][y].sigh == self.board.SIGNS.get("miss") or \
+               enemy.board.board[x][y].sigh == self.board.SIGNS.get("hit"):
                 return False
-            elif self.board.board[x][y].sigh != self.board.SIGNS.get("empty_dot"):
-                self.board.board[x][y].change_dot("hit")
+            elif enemy.board.board[x][y].sigh != self.board.SIGNS.get("empty_dot"):
+                enemy.board.board[x][y].change_dot("hit")
+                print("Попал!!!ГОРИТ!!!")
             else:
-                self.board.board[x][y].change_dot("miss")
+                enemy.board.board[x][y].change_dot("miss")
+                print("Промах...")
 
             return True
         return False
