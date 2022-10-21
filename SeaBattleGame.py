@@ -131,10 +131,10 @@ class SeaBattleGame:
 
             if ship_size > 1:
                 direction = self.get_direction()
-                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                is_putted = self._player.put_ship(ship_size, coord_x,
                                                             coord_y, direction)
             else:
-                is_putted = self._player.put_ships_manually(ship_size, coord_x,
+                is_putted = self._player.put_ship(ship_size, coord_x,
                                                             coord_y)
 
             if is_putted is False:
@@ -153,10 +153,10 @@ class SeaBattleGame:
             coord_x, coord_y = self.get_position(auto=True)
             if ship_size > 1:
                 direction = self.get_direction(auto=True)
-                is_putted = player.put_ships_manually(ship_size, coord_x,
+                is_putted = player.put_ship(ship_size, coord_x,
                                                       coord_y, direction)
             else:
-                is_putted = player.put_ships_manually(ship_size, coord_x,
+                is_putted = player.put_ship(ship_size, coord_x,
                                                       coord_y)
 
             if is_putted is False:

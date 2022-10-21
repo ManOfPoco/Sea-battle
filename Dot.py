@@ -1,11 +1,10 @@
-import emoji
-
 
 class Dot:
 
     SIGNS = {
         "my_ship": "\U0001F7E6", "enemy_ship": "\U0001F7E5", "empty_dot": "⬜",
-        "hit": "❌", "miss": "✖️ "
+        "destroy": "❌", "miss": "✖️ ", "three_health": "🩸", "two_health": "📛",
+        "one_health": "🔥"
     }
 
     def __init__(self, x, y, sigh) -> None:

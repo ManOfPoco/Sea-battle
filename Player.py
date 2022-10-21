@@ -50,7 +50,7 @@ class Player:
             return False
         return True
 
-    def put_ships_manually(self, ship_type: int, coord_x: int,
+    def put_ship(self, ship_type: int, coord_x: int,
                            coord_y: int, direction: str = None) -> bool:
         """Putting ships on the Board"""
 
@@ -89,15 +89,32 @@ class Player:
 
         if self.board_validation(x, y):
 
-            if enemy.board.board[x][y].sigh == self.board.SIGNS.get("miss") or \
-               enemy.board.board[x][y].sigh == self.board.SIGNS.get("hit"):
+            if (x, y,) in self.board.already_fired:
                 return False
+
             elif enemy.board.board[x][y].sigh != self.board.SIGNS.get("empty_dot"):
-                enemy.board.board[x][y].change_dot("hit")
-                print("Попал!!!ГОРИТ!!!")
+                enemy_ship = enemy.board.board[x][y]
+                enemy_ship.health -= 1
+
+                if enemy_ship.health == 3:
+                    enemy_ship.change_dot("three_health")
+                    print("Экипаж контужен!!!")
+
+                elif enemy_ship.health == 2:
+                    enemy_ship.change_dot("two_health")
+                    print("Небольшое возгорание!!!")
+
+                elif enemy_ship.health == 1:
+                    enemy_ship.change_dot("one_health")
+                    print("ПОЛЫХАЕТ!!!")
+
+                else:
+                    enemy_ship.change_dot("destroy")
+                    print("УНИЧТОЖИЛ!!!")
             else:
                 enemy.board.board[x][y].change_dot("miss")
                 print("Промах...")
 
+            self.board.already_fired.append((x, y))
             return True
         return False
