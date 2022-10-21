@@ -84,17 +84,20 @@ class Player:
 
         return True
 
-    def shot(self, x, y, enemy) -> bool:
+    def shot(self, x: int, y: int, enemy: Ships) -> bool:
         """Player shot"""
 
         if self.board_validation(x, y):
 
-            if (x, y,) in self.board.already_fired:
+            if (x, y,) in self.board.already_fired or \
+                    enemy.board.board[x][y].sigh == self.board.SIGNS.get("miss"):
                 return False
 
             elif enemy.board.board[x][y].sigh != self.board.SIGNS.get("empty_dot"):
                 enemy_ship = enemy.board.board[x][y]
                 enemy_ship.health -= 1
+
+                enemy_ship.parts_to_destroy.append((x, y))
 
                 if enemy_ship.health == 3:
                     enemy_ship.change_dot("three_health")
@@ -111,8 +114,13 @@ class Player:
                 else:
                     enemy_ship.change_dot("destroy")
                     print("УНИЧТОЖИЛ!!!")
+                    destroy = enemy_ship.parts_to_destroy
 
-                    print(enemy_ship.destroy_effect(x, y, enemy.board.board))
+                    for i in range(len(destroy)):
+                        for j in range(1):
+                            enemy_ship.destroy_effect(destroy[i][j],
+                                                      destroy[i][j+1],
+                                                      enemy.board.board)
             else:
                 enemy.board.board[x][y].change_dot("miss")
                 print("Промах...")

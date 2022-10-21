@@ -3,6 +3,7 @@ from Dot import Dot
 
 class Ship(Dot):
     def __init__(self, x, y, sigh) -> None:
+        self.parts_to_destroy = list()
         super().__init__(x, y, sigh)
 
     def board_validation(self, x, y) -> bool:
@@ -10,22 +11,8 @@ class Ship(Dot):
             return False
         return True
 
-    def check_nearest_dots(self, x, y, board):
-        start_x, start_y = x, y
-        dct = {0: (0, 1), 1: (0, -1), 2: (1, 0), 3: (-1, 0)}
-
-        for i in range(4):
-            for j in range(1):
-                if not self.board_validation(x, y):
-                    x, y = start_x, start_y
-                    continue
-                print(dct.get(i))
-                if board[start_x][start_y].sigh == board[x][y].sigh:
-                    self.destroy_effect(start_x, start_y, board)
-
-
     def destroy_effect(self, x, y, board):
-        start_x, start_y = x, y
+        start_y = y
         x, y = x - 1, y - 1
         for _ in range(3):
             for _ in range(3):
@@ -38,7 +25,6 @@ class Ship(Dot):
                 y += 1
             x += 1
             y = start_y
-        self.check_nearest_dots(start_x, start_y, board)
 
 
 class OneDeckShip(Ship):

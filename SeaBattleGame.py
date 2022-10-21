@@ -10,7 +10,10 @@ class SeaBattleGame:
         self._round = 1
 
     def check_end_game(self) -> bool:
-        return True
+        if self._player.board.ships_count() == 20 or \
+                self._computer.board.ships_count() == 20:
+            return True
+        return False
 
     def start_game(self) -> None:
         print(input("""
@@ -60,13 +63,15 @@ class SeaBattleGame:
             self.ship_placement_manually()
         self.ship_placement_automatically(self._computer)
 
-        while self.check_end_game():
+        while not self.check_end_game():
             self._player.board.board_representation()
             self._computer.board.board_representation(hide=True)
 
             turn_to_shot = self.check_order()
             print(f"Now {turn_to_shot.name} turn")
             self.game_round(turn_to_shot)
+
+        self.end_game()
 
     def check_order(self):
         self._round += 1
@@ -165,16 +170,16 @@ class SeaBattleGame:
 
     def game_round(self, player: Player):
 
-        if player == self._computer:
+        if player.name == self._computer.name:
             coordto_fire_x, coordto_fire_y = choices(range(10), k=2)
-
-        while True:
-            try:
-                coordto_fire_x, coordto_fire_y = map(int, input("Enter position x and y separated by a space to shot: ").split())
-            except ValueError:
-                print("Not valid position, try again please")
-                continue
-            break
+        else:
+            while True:
+                try:
+                    coordto_fire_x, coordto_fire_y = map(int, input("Enter position x and y separated by a space to shot: ").split())
+                except ValueError:
+                    print("Not valid position, try again please")
+                    continue
+                break
 
         enemy_to_shot = self._computer \
             if player == self._player else self._player
@@ -183,11 +188,30 @@ class SeaBattleGame:
                                      coordto_fire_y, enemy_to_shot)
 
         if result_of_shot is False:
-            print("You can't fire there")
+            if not player.name == self._computer.name:
+                print("You can't fire there")
             self.game_round(player)
 
     def end_game(self):
-        pass
+        if self._player.board.ships_count() == 20:
+            print("""================================================================================================================
+                                                                            
+                                            ░██╗░░░░░░░██╗██╗███╗░░██╗
+                                            ░██║░░██╗░░██║██║████╗░██║
+                                            ░╚██╗████╗██╔╝██║██╔██╗██║
+                                            ░░████╔═████║░██║██║╚████║
+                                            ░░╚██╔╝░╚██╔╝░██║██║░╚███║
+                                            ░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝
+================================================================================================================""")
+        else:
+            print("""================================================================================================================
+                                    ██████╗░███████╗███████╗███████╗░█████╗░████████╗
+                                    ██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝
+                                    ██║░░██║█████╗░░█████╗░░█████╗░░███████║░░░██║░░░
+                                    ██║░░██║██╔══╝░░██╔══╝░░██╔══╝░░██╔══██║░░░██║░░░
+                                    ██████╔╝███████╗██║░░░░░███████╗██║░░██║░░░██║░░░
+                                    ╚═════╝░╚══════╝╚═╝░░░░░╚══════╝╚═╝░░╚═╝░░░╚═╝░░░
+================================================================================================================""")
 
 
 seabattle = SeaBattleGame(Player("Player", Board()),
