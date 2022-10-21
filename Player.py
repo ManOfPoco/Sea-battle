@@ -51,7 +51,7 @@ class Player:
         return True
 
     def put_ship(self, ship_type: int, coord_x: int,
-                           coord_y: int, direction: str = None) -> bool:
+                 coord_y: int, direction: str = None) -> bool:
         """Putting ships on the Board"""
 
         ship_relation = {
@@ -111,6 +111,8 @@ class Player:
                 else:
                     enemy_ship.change_dot("destroy")
                     print("УНИЧТОЖИЛ!!!")
+
+                    print(enemy_ship.destroy_effect(x, y, enemy.board.board))
             else:
                 enemy.board.board[x][y].change_dot("miss")
                 print("Промах...")

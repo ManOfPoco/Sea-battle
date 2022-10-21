@@ -62,7 +62,7 @@ class SeaBattleGame:
 
         while self.check_end_game():
             self._player.board.board_representation()
-            self._computer.board.board_representation()
+            self._computer.board.board_representation(hide=True)
 
             turn_to_shot = self.check_order()
             print(f"Now {turn_to_shot.name} turn")
@@ -132,10 +132,10 @@ class SeaBattleGame:
             if ship_size > 1:
                 direction = self.get_direction()
                 is_putted = self._player.put_ship(ship_size, coord_x,
-                                                            coord_y, direction)
+                                                  coord_y, direction)
             else:
                 is_putted = self._player.put_ship(ship_size, coord_x,
-                                                            coord_y)
+                                                  coord_y)
 
             if is_putted is False:
                 print("You can't put a ship there")
@@ -154,10 +154,10 @@ class SeaBattleGame:
             if ship_size > 1:
                 direction = self.get_direction(auto=True)
                 is_putted = player.put_ship(ship_size, coord_x,
-                                                      coord_y, direction)
+                                            coord_y, direction)
             else:
                 is_putted = player.put_ship(ship_size, coord_x,
-                                                      coord_y)
+                                            coord_y)
 
             if is_putted is False:
                 ships_remained.append(ship_size)
@@ -185,7 +185,6 @@ class SeaBattleGame:
         if result_of_shot is False:
             print("You can't fire there")
             self.game_round(player)
-
 
     def end_game(self):
         pass
